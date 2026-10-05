@@ -19,9 +19,17 @@
             },
         },
         {
-            "label": "Build game",
+            "label": "Build server",
             "type": "shell",
             "command": "${workspaceFolder}/nob.exe",//"${workspaceFolder}/Tools/windows_x64/zig.exe",
+            "args": ["server"],
+            "dependsOn": "Build nob",
+        },
+        {
+            "label": "Build client",
+            "type": "shell",
+            "command": "${workspaceFolder}/nob.exe",//"${workspaceFolder}/Tools/windows_x64/zig.exe",
+            "args": ["client"],
             "dependsOn": "Build nob",
         },
         {

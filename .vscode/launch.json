@@ -5,23 +5,34 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "(game) Launch",
+        "name": "(server) Launch",
         "type": "cppdbg",
         "request": "launch",
         "miDebuggerPath": "${workspaceFolder}/Tools/w64devkit/bin/gdb.exe",
-        "program": "${workspaceFolder}/Deployment/game.exe",
+        "program": "${workspaceFolder}/Deployment/server.exe",
         "args": [],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}/Deployment",
-        "preLaunchTask": "Build game"
+        "preLaunchTask": "Build server"
+      },
+      {
+        "name": "(client) Launch",
+        "type": "cppdbg",
+        "request": "launch",
+        "miDebuggerPath": "${workspaceFolder}/Tools/w64devkit/bin/gdb.exe",
+        "program": "${workspaceFolder}/Deployment/client.exe",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceRoot}/Deployment",
+        "preLaunchTask": "Build client"
       },
       {
         "name": "(nob) Launch",
-        "type": "cppdbg",
+        "type": "cppvsdbg",
         "request": "launch",
         "program": "${workspaceFolder}/nob.exe",
-        "args": [],
-        "stopAtEntry": false,
+        "args": ["server"],
+        "stopAtEntry": true,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "Build nob"
       }
