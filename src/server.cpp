@@ -9,6 +9,8 @@
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
 #include <stdio.h>
+#include <iostream>
+#include <string>
 
 #pragma comment(lib, "Ws2_32.lib")
 int iResult;
@@ -24,7 +26,7 @@ void raylib_start(void)
     printf("WSAStartup failed: %d\n", iResult);
   }
 
-#define DEFAULT_PORT "27015"
+#define DEFAULT_PORT "80"
 
   struct addrinfo *result = NULL, *ptr = NULL, hints;
 
@@ -35,7 +37,7 @@ void raylib_start(void)
   hints.ai_flags = AI_PASSIVE;
 
   // Resolve the local address and port to be used by the server
-  iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+  iResult = getaddrinfo("127.0.0.1", DEFAULT_PORT, &hints, &result);
   if (iResult != 0)
   {
     printf("getaddrinfo failed: %d\n", iResult);
@@ -124,4 +126,27 @@ void raylib_start(void)
     }
 
   } while (iResult > 0);
+}
+
+int main() {
+    // 1. Définition des composants de l'URL
+    std::string hote = "://example.com";
+    std::string chemin = "C:/Users/2530013/Desktop/index.html";
+
+    // 2. Construction textuelle de la requête HTTP GET
+    // Chaque ligne de l'en-tête DOIT se terminer par "\r\n" (Retour chariot + Fin de ligne)
+    std::string requeteHttp =
+        "GET " + chemin + " HTTP/1.1\r\n" +
+        "Host: " + hote + "\r\n" +
+        "User-Agent: MonApplicationCpp/1.0\r\n" +
+        "Accept: text/plain, application/json\r\n" +
+        "Connection: close\r\n" + // Demande au serveur de fermer la connexion après la réponse
+        "\r\n";                   // Une ligne VIDE obligatoire pour marquer la fin des en-têtes
+
+    // 3. Affichage du texte brut qui sera envoyé sur le réseau
+    std::cout << "--- TEXTE DE LA REQUÊTE HTTP CONSTRUIT ---\n";
+    std::cout << requeteHttp;
+    std::cout << "------------------------------------------\n";
+
+    return 0;
 }

@@ -17,7 +17,7 @@
 #define LAB_NAME "serveur"
 #define EXE_NAME "server"
 
-#define RESEAU_LFLAGS "-lws2_32"
+#define RESEAU_LFLAGS "-lws2_32","-lstdc++"
 int main(int argc, char **argv)
 {
     NOB_GO_REBUILD_URSELF(argc, argv);

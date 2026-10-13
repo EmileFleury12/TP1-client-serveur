@@ -1,4 +1,5 @@
 #include "entrypoint.h"
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -8,13 +9,15 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
+#include <iostream>
+#include <string>
 
 int iResult;
 
 void raylib_start(void)
 {
   WSADATA wsaData;
-  
+
   // Initialize Winsock
   iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
   if (iResult != 0)
@@ -27,14 +30,15 @@ void raylib_start(void)
                   hints;
 
   ZeroMemory(&hints, sizeof(hints));
-  hints.ai_family = AF_UNSPEC;
+  hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = IPPROTO_TCP;
+  hints.ai_flags = AI_PASSIVE;
 
-#define DEFAULT_PORT "27015"
+#define DEFAULT_PORT "80"
 
   // Resolve the server address and port
-  iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+  iResult = getaddrinfo("127.0.0.1", DEFAULT_PORT, &hints, &result);
   if (iResult != 0)
   {
     printf("getaddrinfo failed: %d\n", iResult);
@@ -57,11 +61,12 @@ void raylib_start(void)
     freeaddrinfo(result);
     WSACleanup();
   }
-
+  
   // Connect to server.
   iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
   if (iResult == SOCKET_ERROR)
   {
+    printf("Error at connect(): %ld\n", WSAGetLastError());
     closesocket(ConnectSocket);
     ConnectSocket = INVALID_SOCKET;
   }
@@ -131,4 +136,27 @@ void raylib_start(void)
   // cleanup
   closesocket(ConnectSocket);
   WSACleanup();
+}
+
+ int main() {
+    // 1. Définition des composants de l'URL
+    std::string hote = "://example.com";
+    std::string chemin = "C:/Users/2530013/Desktop/index.html";
+
+    // 2. Construction textuelle de la requête HTTP GET
+    // Chaque ligne de l'en-tête DOIT se terminer par "\r\n" (Retour chariot + Fin de ligne)
+    std::string requeteHttp =
+        "GET " + chemin + " HTTP/1.1\r\n" +
+        "Host: " + hote + "\r\n" +
+        "User-Agent: MonApplicationCpp/1.0\r\n" +
+        "Accept: text/plain, application/json\r\n" +
+        "Connection: close\r\n" + // Demande au serveur de fermer la connexion après la réponse
+        "\r\n";                   // Une ligne VIDE obligatoire pour marquer la fin des en-têtes
+
+    // 3. Affichage du texte brut qui sera envoyé sur le réseau
+    std::cout << "--- TEXTE DE LA REQUÊTE HTTP CONSTRUIT ---\n";
+    std::cout << requeteHttp;
+    std::cout << "------------------------------------------\n";
+
+    return 0;
 }
