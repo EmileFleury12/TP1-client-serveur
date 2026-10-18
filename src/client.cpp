@@ -38,7 +38,7 @@ void raylib_start(void)
 #define DEFAULT_PORT "80"
 
   // Resolve the server address and port
-  iResult = getaddrinfo("127.0.0.1", DEFAULT_PORT, &hints, &result);
+  iResult = getaddrinfo("example.com", "80", &hints, &result);
   if (iResult != 0)
   {
     printf("getaddrinfo failed: %d\n", iResult);
@@ -140,8 +140,8 @@ void raylib_start(void)
 
  int main() {
     // 1. Définition des composants de l'URL
-    std::string hote = "://example.com";
-    std::string chemin = "C:/Users/2530013/Desktop/index.html";
+    std::string hote = "example.com";
+    std::string chemin = "/index.html";
 
     // 2. Construction textuelle de la requête HTTP GET
     // Chaque ligne de l'en-tête DOIT se terminer par "\r\n" (Retour chariot + Fin de ligne)
@@ -154,9 +154,29 @@ void raylib_start(void)
         "\r\n";                   // Une ligne VIDE obligatoire pour marquer la fin des en-têtes
 
     // 3. Affichage du texte brut qui sera envoyé sur le réseau
-    std::cout << "--- TEXTE DE LA REQUÊTE HTTP CONSTRUIT ---\n";
+    std::cout << "--- REQUÊTE HTTP GET ---\n";
     std::cout << requeteHttp;
     std::cout << "------------------------------------------\n";
 
     return 0;
+/*
+     // 1. Définition des composants de l'URL
+    std::string hote = "example.com";
+    std::string chemin = "/index.html";
+
+    // 2. Construction de la requête HTTP HEAD
+    std::string requeteHttp =
+        "HEAD " + chemin + " HTTP/1.1\r\n" +
+        "Host: " + hote + "\r\n" +
+        "User-Agent: MonApplicationCpp/1.0\r\n" +
+        "Accept: text/plain, application/json\r\n" +
+        "Connection: close\r\n" +
+        "\r\n";
+
+    // 3. Affichage de la requête
+    std::cout << "--- REQUETE HTTP HEAD ---\n";
+    std::cout << requeteHttp;
+    std::cout << "-------------------------\n";
+
+    return 0;*/
 }

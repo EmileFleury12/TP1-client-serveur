@@ -4,14 +4,14 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**"//,
-                //"${workspaceFolder}/Libraries/raylib/src"
+                //${workspaceFolder}/Libraries/raylib/src"
             ],
             "windowsSdkVersion": "10.0.26100.0",
-            "compilerPath": "${workspaceFolder}/Tools/w64devkit/bin/cc.exe",
+            "compilerPath": "C:/ef/TP1-client-serveur/Tools/w64devkit/bin/cc.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64"
         }
     ],
     "version": 4
-}
+}  
