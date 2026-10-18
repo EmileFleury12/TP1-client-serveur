@@ -26,7 +26,7 @@ void raylib_start(void)
     printf("WSAStartup failed: %d\n", iResult);
   }
 
-#define DEFAULT_PORT "80"
+#define DEFAULT_PORT "8080"
 
   struct addrinfo *result = NULL, *ptr = NULL, hints;
 
@@ -128,51 +128,12 @@ void raylib_start(void)
   } while (iResult > 0);
 }
 
-int main() {
-/*    // 1. Définition des composants de l'URL
-    std::string hote = "://example.com";
-    std::string chemin = "/index.html";
-
-    // 2. Construction textuelle de la requête HTTP GET
-    // Chaque ligne de l'en-tête DOIT se terminer par "\r\n" (Retour chariot + Fin de ligne)
-    std::string requeteHttp =
-        "GET " + chemin + " HTTP/1.1\r\n" +
-        "Host: " + hote + "\r\n" +
-        "User-Agent: MonApplicationCpp/1.0\r\n" +
-        "Accept: text/plain, application/json\r\n" +
-        "Connection: close\r\n" + // Demande au serveur de fermer la connexion après la réponse
-        "\r\n";                   // Une ligne VIDE obligatoire pour marquer la fin des en-têtes
-
-    // 3. Affichage du texte brut qui sera envoyé sur le réseau
-    std::cout << "--- REQUÊTE HTTP GET ---\n";
-    std::cout << requeteHttp;
-    std::cout << "------------------------------------------\n";
-
-    return 0;
-    
-     // 1. Définition des composants de l'URL
-    std::string hote = "example.com";
-    std::string chemin = "/index.html";
-
-    // 2. Construction de la requête HTTP HEAD
-    std::string requeteHttp =
-        "HEAD " + chemin + " HTTP/1.1\r\n" +
-        "Host: " + hote + "\r\n" +
-        "User-Agent: MonApplicationCpp/1.0\r\n" +
-        "Accept: text/plain, application/json\r\n" +
-        "Connection: close\r\n" +
-        "\r\n";
-
-    // 3. Affichage de la requête
-    std::cout << "--- REQUETE HTTP HEAD ---\n";
-    std::cout << requeteHttp;
-    std::cout << "-------------------------\n";
-
-    return 0;
-
+int main()
+{
+  /*
     // 1. Définition des composants de l'URL
-    std::string hote = "example.com";
-    std::string chemin = "/fichier.txt";
+    std::string hote = "127.0.0.1";
+    std::string chemin = "/nouveau.html";
 
     // 2. Données à envoyer au serveur
     std::string corps = "Bonjour depuis C++ !";
@@ -181,7 +142,6 @@ int main() {
     std::string requeteHttp =
         "PUT " + chemin + " HTTP/1.1\r\n" +
         "Host: " + hote + "\r\n" +
-        "User-Agent: MonApplicationCpp/1.0\r\n" +
         "Content-Type: text/plain; charset=UTF-8\r\n" +
         "Content-Length: " + std::to_string(corps.size()) + "\r\n" +
         "Connection: close\r\n" +
@@ -196,14 +156,13 @@ int main() {
     return 0;
 
     // 1. Définition des composants de l'URL
-    std::string hote = "example.com";
+    std::string hote = "127.0.0.1";
     std::string chemin = "/fichier.txt";
 
     // 2. Construction de la requête HTTP DELETE
     std::string requeteHttp =
         "DELETE " + chemin + " HTTP/1.1\r\n" +
         "Host: " + hote + "\r\n" +
-        "User-Agent: MonApplicationCpp/1.0\r\n" +
         "Connection: close\r\n" +
         "\r\n";
 
@@ -213,4 +172,7 @@ int main() {
     std::cout << "--------------------------\n";
 
     return 0;*/
+  raylib_start();
+
+  return 0;
 }

@@ -23,6 +23,7 @@ void raylib_start(void)
   if (iResult != 0)
   {
     printf("WSAStartup failed: %d\n", iResult);
+    return;
   }
 
   struct addrinfo *result = NULL,
@@ -35,14 +36,15 @@ void raylib_start(void)
   hints.ai_protocol = IPPROTO_TCP;
   hints.ai_flags = AI_PASSIVE;
 
-#define DEFAULT_PORT "80"
+#define DEFAULT_PORT "8080"
 
   // Resolve the server address and port
-  iResult = getaddrinfo("example.com", "80", &hints, &result);
+  iResult = getaddrinfo("127.0.0.1", DEFAULT_PORT, &hints, &result);
   if (iResult != 0)
   {
     printf("getaddrinfo failed: %d\n", iResult);
     WSACleanup();
+    return;
   }
 
   SOCKET ConnectSocket = INVALID_SOCKET;
@@ -61,7 +63,7 @@ void raylib_start(void)
     freeaddrinfo(result);
     WSACleanup();
   }
-  
+
   // Connect to server.
   iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
   if (iResult == SOCKET_ERROR)
@@ -91,8 +93,45 @@ void raylib_start(void)
   const char *sendbuf = "this is a test";
   char recvbuf[DEFAULT_BUFLEN];
 
+  // 1. Définition des composants de l'URL
+  std::string hote = "127.0.0.1";
+  std::string chemin = "/index.html";
+
+  // 2. Construction textuelle de la requête HTTP GET
+  // Chaque ligne de l'en-tête DOIT se terminer par "\r\n" (Retour chariot + Fin de ligne)
+  std::string requeteHttp =
+      "GET " + chemin + " HTTP/1.1\r\n" +
+      "Host: " + hote + "\r\n" +
+      "User-Agent: curl/8.6.0\r\n" +
+      "Accept: */* \r\n" +
+      "Connection: close\r\n" + // Demande au serveur de fermer la connexion après la réponse
+      "\r\n";                   // Une ligne VIDE obligatoire pour marquer la fin des en-têtes
+
+  // 3. Affichage du texte brut qui sera envoyé sur le réseau
+  std::cout << "--- REQUÊTE HTTP GET ---\n";
+  std::cout << requeteHttp;
+  std::cout << "------------------------------------------\n";
+/*
+// 1. Définition des composants de l'URL
+  std::string hote = "127.0.0.1";
+  std::string chemin = "/";
+
+  // 2. Construction de la requête HTTP HEAD
+  std::string requeteHttp =
+      "HEAD " + chemin + " HTTP/1.1\r\n" +
+      "Host: " + hote + "\r\n" +
+      "User-Agent: curl/8.6.0\r\n" +
+      "Accept: / \r\n" +
+      "Connection: close\r\n" +
+      "\r\n";
+
+  // 3. Affichage de la requête
+  std::cout << "--- REQUETE HTTP HEAD ---\n";
+  std::cout << requeteHttp;
+  std::cout << "-------------------------\n";
+*/
   // Send an initial buffer
-  iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
+  iResult = send(ConnectSocket, requeteHttp.c_str(), (int)requeteHttp.length(), 0);
   if (iResult == SOCKET_ERROR)
   {
     printf("send failed: %d\n", WSAGetLastError());
@@ -117,7 +156,7 @@ void raylib_start(void)
   {
     iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
     if (iResult > 0)
-      printf("Bytes received: %d\n", iResult);
+      std::cout.write(recvbuf, iResult);
     else if (iResult == 0)
       printf("Connection closed\n");
     else
@@ -138,45 +177,9 @@ void raylib_start(void)
   WSACleanup();
 }
 
- int main() {
-    // 1. Définition des composants de l'URL
-    std::string hote = "example.com";
-    std::string chemin = "/index.html";
+int main()
+{
+  raylib_start();
 
-    // 2. Construction textuelle de la requête HTTP GET
-    // Chaque ligne de l'en-tête DOIT se terminer par "\r\n" (Retour chariot + Fin de ligne)
-    std::string requeteHttp =
-        "GET " + chemin + " HTTP/1.1\r\n" +
-        "Host: " + hote + "\r\n" +
-        "User-Agent: MonApplicationCpp/1.0\r\n" +
-        "Accept: text/plain, application/json\r\n" +
-        "Connection: close\r\n" + // Demande au serveur de fermer la connexion après la réponse
-        "\r\n";                   // Une ligne VIDE obligatoire pour marquer la fin des en-têtes
-
-    // 3. Affichage du texte brut qui sera envoyé sur le réseau
-    std::cout << "--- REQUÊTE HTTP GET ---\n";
-    std::cout << requeteHttp;
-    std::cout << "------------------------------------------\n";
-
-    return 0;
-/*
-     // 1. Définition des composants de l'URL
-    std::string hote = "example.com";
-    std::string chemin = "/index.html";
-
-    // 2. Construction de la requête HTTP HEAD
-    std::string requeteHttp =
-        "HEAD " + chemin + " HTTP/1.1\r\n" +
-        "Host: " + hote + "\r\n" +
-        "User-Agent: MonApplicationCpp/1.0\r\n" +
-        "Accept: text/plain, application/json\r\n" +
-        "Connection: close\r\n" +
-        "\r\n";
-
-    // 3. Affichage de la requête
-    std::cout << "--- REQUETE HTTP HEAD ---\n";
-    std::cout << requeteHttp;
-    std::cout << "-------------------------\n";
-
-    return 0;*/
+  return 0;
 }
