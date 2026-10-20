@@ -18,7 +18,7 @@ void raylib_start(void)
 {
   WSADATA wsaData;
 
-  // Initialize Winsock
+  // Initialise Winsock
   iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
   if (iResult != 0)
   {
@@ -38,7 +38,7 @@ void raylib_start(void)
 
 #define DEFAULT_PORT "8080"
 
-  // Resolve the server address and port
+  // Résoudre l’adresse et le port du serveur
   iResult = getaddrinfo("127.0.0.1", DEFAULT_PORT, &hints, &result);
   if (iResult != 0)
   {
@@ -49,11 +49,10 @@ void raylib_start(void)
 
   SOCKET ConnectSocket = INVALID_SOCKET;
 
-  // Attempt to connect to the first address returned by
-  // the call to getaddrinfo
+  // Tenter de se connecter à la première adresse renvoyée par l'appel à getaddrinfo
   ptr = result;
 
-  // Create a SOCKET for connecting to server
+  // Créer un socket pour vous connecter au serveur.
   ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
                          ptr->ai_protocol);
 
@@ -73,11 +72,6 @@ void raylib_start(void)
     ConnectSocket = INVALID_SOCKET;
   }
 
-  // Should really try the next address returned by getaddrinfo
-  // if the connect call failed
-  // But for this simple example we just free the resources
-  // returned by getaddrinfo and print an error message
-
   freeaddrinfo(result);
 
   if (ConnectSocket == INVALID_SOCKET)
@@ -93,44 +87,95 @@ void raylib_start(void)
   const char *sendbuf = "this is a test";
   char recvbuf[DEFAULT_BUFLEN];
 
-  // 1. Définition des composants de l'URL
-  std::string hote = "127.0.0.1";
-  std::string chemin = "/index.html";
+  int verb;
 
-  // 2. Construction textuelle de la requête HTTP GET
-  // Chaque ligne de l'en-tête DOIT se terminer par "\r\n" (Retour chariot + Fin de ligne)
-  std::string requeteHttp =
-      "GET " + chemin + " HTTP/1.1\r\n" +
-      "Host: " + hote + "\r\n" +
-      "User-Agent: curl/8.6.0\r\n" +
-      "Accept: */* \r\n" +
-      "Connection: close\r\n" + // Demande au serveur de fermer la connexion après la réponse
-      "\r\n";                   // Une ligne VIDE obligatoire pour marquer la fin des en-têtes
+  std::cout << "Choisissez une methode HTTP :\n";
+  std::cout << "1. GET\n";
+  std::cout << "2. HEAD\n";
+  std::cout << "3. PUT\n";
+  std::cout << "4. DELETE\n";
+  std::cout << "Votre choix : ";
 
-  // 3. Affichage du texte brut qui sera envoyé sur le réseau
-  std::cout << "--- REQUÊTE HTTP GET ---\n";
-  std::cout << requeteHttp;
-  std::cout << "------------------------------------------\n";
-/*
-// 1. Définition des composants de l'URL
-  std::string hote = "127.0.0.1";
-  std::string chemin = "/";
+  std::cin >> verb;
 
-  // 2. Construction de la requête HTTP HEAD
-  std::string requeteHttp =
-      "HEAD " + chemin + " HTTP/1.1\r\n" +
-      "Host: " + hote + "\r\n" +
-      "User-Agent: curl/8.6.0\r\n" +
-      "Accept: / \r\n" +
-      "Connection: close\r\n" +
-      "\r\n";
+  std::string methode;
+  std::string requeteHttp;
 
-  // 3. Affichage de la requête
-  std::cout << "--- REQUETE HTTP HEAD ---\n";
-  std::cout << requeteHttp;
-  std::cout << "-------------------------\n";
-*/
-  // Send an initial buffer
+  if (verb == 1)
+  {
+    // 1. Définition des composants de l'URL
+    std::string hote = "127.0.0.1";
+    std::string chemin = "/index.html";
+
+    // 2. Construction textuelle de la requête HTTP GET
+    // Chaque ligne de l'en-tête DOIT se terminer par "\r\n" (Retour chariot + Fin de ligne)
+    std::string requeteHttp =
+        "GET " + chemin + " HTTP/1.1\r\n" +
+        "Host: " + hote + "\r\n" +
+        "User-Agent: curl/8.6.0\r\n" +
+        "Accept: */* \r\n" +
+        "Connection: close\r\n" + // Demande au serveur de fermer la connexion après la réponse
+        "\r\n";                   // Une ligne VIDE obligatoire pour marquer la fin des en-têtes
+
+    // 3. Affichage du texte brut qui sera envoyé sur le réseau
+    std::cout << "--- REQUÊTE HTTP GET ---\n";
+    std::cout << requeteHttp;
+  }
+  else if (verb == 2)
+  {
+    std::string hote = "127.0.0.1";
+    std::string chemin = "/";
+
+    std::string requeteHttp =
+        "HEAD " + chemin + " HTTP/1.1\r\n" +
+        "Host: " + hote + "\r\n" +
+        "User-Agent: curl/8.6.0\r\n" +
+        "Accept: / \r\n" +
+        "Connection: close\r\n" +
+        "\r\n";
+
+    std::cout << "--- REQUETE HTTP HEAD ---\n";
+    std::cout << requeteHttp;
+  }
+  else if (verb == 3)
+  {
+    std::string hote = "127.0.0.1";
+    std::string chemin = "/nouveau.html";
+
+    std::string corps = "Bonjour depuis C++ !";
+
+    std::string requeteHttp =
+        "PUT " + chemin + " HTTP/1.1\r\n" +
+        "Host: " + hote + "\r\n" +
+        "Content-Type: text/plain; charset=UTF-8\r\n" +
+        "Content-Length: " + std::to_string(corps.size()) + "\r\n" +
+        "Connection: close\r\n" +
+        "\r\n" +
+        corps;
+
+    std::cout << "--- REQUETE HTTP PUT ---\n";
+    std::cout << requeteHttp << "\n";
+  }
+  else if (verb == 4)
+  {
+    std::string hote = "127.0.0.1";
+    std::string chemin = "/fichier.txt";
+
+    std::string requeteHttp =
+        "DELETE " + chemin + " HTTP/1.1\r\n" +
+        "Host: " + hote + "\r\n" +
+        "Connection: close\r\n" +
+        "\r\n";
+
+    std::cout << "--- REQUETE HTTP DELETE ---\n";
+    std::cout << requeteHttp;
+  }
+  else
+  {
+    std::cout << "Cette méthode n'est pas dans les choix.";
+  }
+
+  // Envoyer un buffer initial
   iResult = send(ConnectSocket, requeteHttp.c_str(), (int)requeteHttp.length(), 0);
   if (iResult == SOCKET_ERROR)
   {
@@ -141,8 +186,10 @@ void raylib_start(void)
 
   printf("Bytes Sent: %ld\n", iResult);
 
-  // shutdown the connection for sending since no more data will be sent
-  // the client can still use the ConnectSocket for receiving data
+  // Fermer la connexion pour l'envoi, étant donné qu'aucune donnée
+  //supplémentaire ne sera transmise;
+  // Le client peut toutefois continuer à utiliser le
+  //ConnectSocket pour recevoir des données.
   iResult = shutdown(ConnectSocket, SD_SEND);
   if (iResult == SOCKET_ERROR)
   {
@@ -151,7 +198,7 @@ void raylib_start(void)
     WSACleanup();
   }
 
-  // Receive data until the server closes the connection
+  // Recevoir des données jusqu’à ce que le serveur ferme la connexion
   do
   {
     iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
@@ -163,7 +210,6 @@ void raylib_start(void)
       printf("recv failed: %d\n", WSAGetLastError());
   } while (iResult > 0);
 
-  // shutdown the send half of the connection since no more data will be sent
   iResult = shutdown(ConnectSocket, SD_SEND);
   if (iResult == SOCKET_ERROR)
   {
@@ -172,7 +218,7 @@ void raylib_start(void)
     WSACleanup();
   }
 
-  // cleanup
+  // Nettoyage
   closesocket(ConnectSocket);
   WSACleanup();
 }

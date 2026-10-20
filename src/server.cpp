@@ -19,7 +19,7 @@ void raylib_start(void)
 {
   WSADATA wsaData;
 
-  // Initialize Winsock
+  // Initialise Winsock
   iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
   if (iResult != 0)
   {
@@ -36,7 +36,7 @@ void raylib_start(void)
   hints.ai_protocol = IPPROTO_TCP;
   hints.ai_flags = AI_PASSIVE;
 
-  // Resolve the local address and port to be used by the server
+  // Déterminer l'adresse locale et le port devant être utilisés par le serveur
   iResult = getaddrinfo("127.0.0.1", DEFAULT_PORT, &hints, &result);
   if (iResult != 0)
   {
@@ -46,7 +46,7 @@ void raylib_start(void)
 
   SOCKET ListenSocket = INVALID_SOCKET;
 
-  // Create a SOCKET for the server to listen for client connections
+  // Créer un socket permettant au serveur d'être à l'écoute des connexions des clients
 
   ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 
@@ -57,7 +57,7 @@ void raylib_start(void)
     WSACleanup();
   }
 
-  // Setup the TCP listening socket
+  // Configurer le socket d'écoute TCP
   iResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
   if (iResult == SOCKET_ERROR)
   {
@@ -80,7 +80,7 @@ void raylib_start(void)
 
   ClientSocket = INVALID_SOCKET;
 
-  // Accept a client socket
+  // Accepter un socket client
   ClientSocket = accept(ListenSocket, NULL, NULL);
   if (ClientSocket == INVALID_SOCKET)
   {
@@ -89,7 +89,7 @@ void raylib_start(void)
     WSACleanup();
   }
 
-  // No longer need server socket
+  // Le socket serveur n’est plus nécessaire
   closesocket(ListenSocket);
 
 #define DEFAULT_BUFLEN 512
@@ -98,7 +98,7 @@ void raylib_start(void)
   int iSendResult;
   int recvbuflen = DEFAULT_BUFLEN;
 
-  // Receive until the peer shuts down the connection
+  // Recevoir jusqu’à ce que le correspondant ferme la connexion
   do
   {
     iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
@@ -106,7 +106,7 @@ void raylib_start(void)
     {
       printf("Bytes received: %d\n", iResult);
 
-      // Echo the buffer back to the sender
+      // Renvoyer le buffer à l'expéditeur
       iSendResult = send(ClientSocket, recvbuf, iResult, 0);
       if (iSendResult == SOCKET_ERROR)
       {
@@ -130,48 +130,6 @@ void raylib_start(void)
 
 int main()
 {
-  /*
-    // 1. Définition des composants de l'URL
-    std::string hote = "127.0.0.1";
-    std::string chemin = "/nouveau.html";
-
-    // 2. Données à envoyer au serveur
-    std::string corps = "Bonjour depuis C++ !";
-
-    // 3. Construction de la requête HTTP PUT
-    std::string requeteHttp =
-        "PUT " + chemin + " HTTP/1.1\r\n" +
-        "Host: " + hote + "\r\n" +
-        "Content-Type: text/plain; charset=UTF-8\r\n" +
-        "Content-Length: " + std::to_string(corps.size()) + "\r\n" +
-        "Connection: close\r\n" +
-        "\r\n" +
-        corps;
-
-    // 4. Affichage de la requête
-    std::cout << "--- REQUETE HTTP PUT ---\n";
-    std::cout << requeteHttp << "\n";
-    std::cout << "------------------------\n";
-
-    return 0;
-
-    // 1. Définition des composants de l'URL
-    std::string hote = "127.0.0.1";
-    std::string chemin = "/fichier.txt";
-
-    // 2. Construction de la requête HTTP DELETE
-    std::string requeteHttp =
-        "DELETE " + chemin + " HTTP/1.1\r\n" +
-        "Host: " + hote + "\r\n" +
-        "Connection: close\r\n" +
-        "\r\n";
-
-    // 3. Affichage de la requête
-    std::cout << "--- REQUETE HTTP DELETE ---\n";
-    std::cout << requeteHttp;
-    std::cout << "--------------------------\n";
-
-    return 0;*/
   raylib_start();
 
   return 0;
